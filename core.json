@@ -1,0 +1,15 @@
+{
+    "id": "vt100",
+    "name": "VT100",
+    "build": "26051622",
+    "bitstream": "karabas_go_top.bin",
+    "visible": true,
+    "type": "osd",
+    "order": 2,
+    "eeprom_bank": 0,
+    "roms": [],
+    "osd": [
+        {"type": "T", "bits": 1, "name": "Reset", "options": null, "default": 0, "hotkey": "Ctrl+Alt+Del"},
+        {"type": "T", "bits": 1, "name": "Global Reset", "options": null, "default": 0, "hotkey": "Ctrl+Alt+Bkspace"}
+    ]
+}
