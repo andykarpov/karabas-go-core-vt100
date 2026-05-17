@@ -194,7 +194,7 @@ begin
       62    when 57600,
       31    when 115200,
       18    when 230400,
-      372   when others;               -- fallback to 9600 when we don't know the translation
+      31   when others;               -- fallback to 115200 when we don't know the translation
 
 -- samplerate: this many samples for each bit
    with have_kl11_bps select samplerate <=
@@ -208,7 +208,7 @@ begin
       14 when 57600,
       14 when 115200,
       12 when 230400,
-      14 when others;                  -- fallback to 9600 when we don't know the translation
+      14 when others;                  -- fallback to 115200 when we don't know the translation
 
 -- minsample: this many samples out of the samplerate should be one for a bit to be considered a one
    with have_kl11_bps select minsample <=
@@ -222,7 +222,7 @@ begin
       8  when 57600,
       8  when 115200,
       6  when 230400,
-      10 when others;                  -- fallback to 9600 when we don't know the translation
+      8 when others;                  -- fallback to 115200 when we don't know the translation
 
    have_kl11_silo <= 1 when have_kl11_rtscts = 1 else 0;
 

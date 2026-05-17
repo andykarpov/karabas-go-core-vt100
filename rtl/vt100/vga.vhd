@@ -65,6 +65,7 @@ entity vga is
 		vgaclk : out std_logic;
       vga_cursor_block : in std_logic := '1';                        -- block or underline cursor
       vga_cursor_blink : in std_logic := '0';                        -- blinking or steady cursor
+		vga_blank : out std_logic;
 
       teste : in std_logic := '0';                                   -- show 24*80 capital-E test pattern
       testf : in std_logic := '0';                                   -- show 24*80 all bits on test pattern
@@ -573,6 +574,9 @@ begin
 
       end if;
    end process;
+	
+	-- blank
+	vga_blank <= '1' when (vga_col < 144 or vga_col >= 744 or vga_row >= 480) else '0';
 
 end implementation;
 

@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 module soft_switches(
-	input				clk,
-	input [15:0]	sw_command,
+	input	wire			clk,
+	input wire [15:0]	sw_command,
 	
 	output reg		sw_reset
 ) ;

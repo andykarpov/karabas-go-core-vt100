@@ -29,6 +29,7 @@ entity vt100_top is
       vgah : out std_logic;
       vgav : out std_logic;
 		vgaclk : out std_logic;
+		vga_blank : out std_logic;
 
       ps2k_c : in std_logic;
       ps2k_d : in std_logic;
@@ -63,6 +64,7 @@ component vt10x is
       vga_fb : out std_logic;                                        -- output - full
       vga_ht : out std_logic;                                        -- output - half
 		vgaclk : out std_logic;
+		vga_blank : out std_logic;
 
 -- serial port
       tx : out std_logic;                                            -- transmit
@@ -106,6 +108,7 @@ begin
       vga_fb => vga_fb,
       vga_ht => vga_ht,
 		vgaclk => vgaclk,
+		vga_blank => vga_blank,
 
       rx => rx,
       tx => tx,

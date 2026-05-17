@@ -28,6 +28,7 @@ entity vt10x is
       vga_fb : out std_logic;                                        -- output - full
       vga_ht : out std_logic;                                        -- output - half
 		vgaclk : out std_logic;
+		vga_blank : out std_logic;
 
 -- serial port
       tx : out std_logic;                                            -- transmit
@@ -128,6 +129,7 @@ component vga is
       vga_fb : out std_logic;                                        -- monochrome output full on
       vga_ht : out std_logic;                                        -- monochrome output half strength for shading
 		vgaclk : out std_logic ;
+		vga_blank : out std_logic;
 
       vga_cursor_block : in std_logic := '1';                        -- block or underline cursor
       vga_cursor_blink : in std_logic := '0';                        -- blinking or steady cursor
@@ -578,6 +580,7 @@ begin
       vga_fb => vga_fb,
       vga_ht => vga_ht,
 		vgaclk => vgaclk,
+		vga_blank => vga_blank,
 
       teste => teste,
       testf => testf,
