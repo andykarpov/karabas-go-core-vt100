@@ -11,7 +11,6 @@ module mcu_uart_bridge(
 	// fifo for rx data from mcu
 	wire fifo_empty, fifo_full;
 	reg fifo_rd, fifo_wr;
-	reg [7:0] fifo_di;
 	wire [7:0] fifo_do;
 	fifo #(.ADDR_WIDTH(8), .DATA_WIDTH(8)) rx_fifo(
 		.clk(clk),
@@ -21,7 +20,7 @@ module mcu_uart_bridge(
 		.rd(fifo_rd),
 		.dout(fifo_do),
 		.wr(fifo_wr),
-		.din(fifo_di)
+		.din(uart_rx_data)
 	);
 	
 	// put incoming data to fifo
@@ -30,7 +29,6 @@ module mcu_uart_bridge(
 		fifo_wr <= 0;
 		if (~fifo_full && prev_uart_rx_idx != uart_rx_idx) begin
 			fifo_wr <= 1;
-			fifo_di <= uart_rx_data;
 			prev_uart_rx_idx <= uart_rx_idx;
 		end
 	end
@@ -49,18 +47,17 @@ module mcu_uart_bridge(
 		.o_TX_Done(tx_done)
 	);
 	
-	reg fifo_rd_req = 0;
+	reg fifo_rd_ack = 0;
 	always @(posedge clk) begin
 		fifo_rd <= 0;
-		if (~fifo_empty) begin
+		tx_dv <= 0;
+		if (~fifo_empty && ~tx_act) begin
 			fifo_rd <= 1;
-			fifo_rd_req <= 1;
-		end else if (~tx_act && fifo_rd_req) begin
-			fifo_rd_req <= 0;
+			fifo_rd_ack <= 1;
+		end else if (~tx_act && fifo_rd_ack) begin
+			fifo_rd_ack <= 0;
 			tx_data <= fifo_do;
 			tx_dv <= 1'b1;
-		end else begin
-			tx_dv <= 1'b0;
 		end
 	end
 	

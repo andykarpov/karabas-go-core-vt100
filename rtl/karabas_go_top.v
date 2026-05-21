@@ -1,126 +1,134 @@
+/*-------------------------------------------------------------------------------------------------------------------
+-- 
+-- 
+-- #       #######                                                 #                                               
+-- #                                                               #                                               
+-- #                                                               #                                               
+-- ############### ############### ############### ############### ############### ############### ############### 
+-- #             #               # #                             # #             #               # #               
+-- #             # ############### #               ############### #             # ############### ############### 
+-- #             # #             # #               #             # #             # #             #               # 
+-- #             # ############### #               ############### ############### ############### ############### 
+--                                                                                                                 
+--         ####### ####### ####### #######                                         ############### ############### 
+--                                                                                 #               #             # 
+--                                                                                 #   ########### #             # 
+--                                                                                 #             # #             # 
+-- https://github.com/andykarpov/karabas-go                                        ############### ############### 
+--
+-- FPGA VT100 core for Karabas-Go Mini
+--
+-- @author Pavel Tsybulin, 2026
+-- @author Andy Karpov <andy.karpov@gmail.com>
+-- EU, 2026
+------------------------------------------------------------------------------------------------------------------*/
+
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 		N/A
-// Engineer: 		Pavel Tsybulin
-// 
-// Create Date:    23:04:11 05/13/2026 
-// Design Name: 
-// Module Name:    karabas_go_top 
-// Project Name: 
-// Target Devices: karabas-go
-// Tool versions: 
-// Description: 
-//
-// Dependencies: 
-//
-// Revision: 
-// Revision 0.01 - File Created
-// Additional Comments: 
-//
-//////////////////////////////////////////////////////////////////////////////////
+`default_nettype none
+
 module karabas_go_top(
-	input 				CLK_50MHZ,
+	input  wire				CLK_50MHZ,
 	
 	//---------------------------
-	inout 				UART_RX,
-	inout 				UART_TX,
-	inout 				UART_CTS,
-	inout 				ESP_RESET_N,
-	inout 				ESP_BOOT_N,
+	inout  wire				UART_RX,
+	inout  wire				UART_TX,
+	inout  wire				UART_CTS,
+	inout  wire				ESP_RESET_N,
+	inout  wire				ESP_BOOT_N,
 	
 	//--------- SRAM ------------------
-	output	[20:0]	MA,
-	inout		[15:0]	MD,
-	output	[1:0]		MWR_N,
-	output	[1:0]		MRD_N,
+	output wire	[20:0]	MA,
+	inout	 wire	[15:0]	MD,
+	output wire	[1:0]		MWR_N,
+	output wire	[1:0]		MRD_N,
 
 	//---------- SDRAM -----------------
-	output	[1:0] 	SDR_BA,
-	output	[12:0]	SDR_A,
-	output				SDR_CLK,
-	output	[1:0]		SDR_DQM,
-	output				SDR_WE_N,
-	output				SDR_CAS_N,
-	output				SDR_RAS_N,
-	inout		[15:0]	SDR_DQ,
+	output wire	[1:0] 	SDR_BA,
+	output wire	[12:0]	SDR_A,
+	output wire				SDR_CLK,
+	output wire	[1:0]		SDR_DQM,
+	output wire				SDR_WE_N,
+	output wire				SDR_CAS_N,
+	output wire				SDR_RAS_N,
+	inout	 wire	[15:0]	SDR_DQ,
 
 	//--------- SD2 ------------------
-	output				SD_CS_N,
-	output				SD_CLK,
-	inout					SD_DI,
-	inout					SD_DO,
-	input					SD_DET_N,
+	output wire				SD_CS_N,
+	output wire				SD_CLK,
+	inout	 wire				SD_DI,
+	inout	 wire				SD_DO,
+	input	 wire				SD_DET_N,
 
 	//---------- VGA -----------------
-	output	[7:0] 	VGA_R,
-	output	[7:0] 	VGA_G,
-	output	[7:0] 	VGA_B,
-	output				VGA_HS,
-	output				VGA_VS,
-	output				V_CLK,
+	output wire	[7:0] 	VGA_R,
+	output wire	[7:0] 	VGA_G,
+	output wire	[7:0] 	VGA_B,
+	output wire				VGA_HS,
+	output wire				VGA_VS,
+	output wire				V_CLK,
 
 	//---------- VDAC2 -----------------
-	output				FT_SPI_CS_N,
-	output				FT_SPI_SCK,
-	input					FT_SPI_MISO,
-	output				FT_SPI_MOSI,
-	input					FT_INT_N,
-	input					FT_CLK,
-	output				FT_OE_N,
+	output wire				FT_SPI_CS_N,
+	output wire				FT_SPI_SCK,
+	input	 wire				FT_SPI_MISO,
+	output wire				FT_SPI_MOSI,
+	input	 wire				FT_INT_N,
+	input	 wire				FT_CLK,
+	output wire				FT_OE_N,
 
 	//---------- IDE -----------------
-	output	[2:0] 	WA,
-	output	[1:0] 	WCS_N,
-	output				WRD_N,
-	output				WWR_N,
-	output				WRESET_N,
-	inout		[15:0] 	WD,
+	output wire	[2:0] 	WA,
+	output wire	[1:0] 	WCS_N,
+	output wire				WRD_N,
+	output wire				WWR_N,
+	output wire				WRESET_N,
+	inout	 wire	[15:0] 	WD,
 
 	//--------- FLOPPY ------------------
-	input					FDC_INDEX,
-	output	[1:0] 	FDC_DRIVE,
-	output				FDC_MOTOR,
-	output				FDC_DIR,
-	output				FDC_STEP,
-	output				FDC_WDATA,
-	output				FDC_WGATE,
-	input					FDC_TR00,
-	input					FDC_WPRT,
-	input					FDC_RDATA,
-	output				FDC_SIDE_N,
+	input	 wire				FDC_INDEX,
+	output wire	[1:0] 	FDC_DRIVE,
+	output wire				FDC_MOTOR,
+	output wire				FDC_DIR,
+	output wire				FDC_STEP,
+	output wire				FDC_WDATA,
+	output wire				FDC_WGATE,
+	input  wire				FDC_TR00,
+	input  wire				FDC_WPRT,
+	input  wire				FDC_RDATA,
+	output wire				FDC_SIDE_N,
 
 	//---------------------------	
-	output				TAPE_OUT,
-	input					TAPE_IN,
-	output				BEEPER,
+	output wire				TAPE_OUT,
+	input	 wire				TAPE_IN,
+	output wire				BEEPER,
 
 	//---------- DAC -----------------
-	output				DAC_LRCK,
-	output				DAC_DAT,
-	output				DAC_BCK,
-	output				DAC_MUTE,
+	output wire				DAC_LRCK,
+	output wire				DAC_DAT,
+	output wire				DAC_BCK,
+	output wire				DAC_MUTE,
 
 	//--------- MCU ------------------
-	input					MCU_CS_N,
-	input					MCU_SCK,
-	inout					MCU_MOSI,
-	output				MCU_MISO,
-	input					MCU_SPI_FT_CS_N,
-	input					MCU_SPI_SD2_CS_N,	
-	inout		[1:0] 	MCU_SPI_IO,
+	input	 wire				MCU_CS_N,
+	input	 wire				MCU_SCK,
+	inout	 wire				MCU_MOSI,
+	output wire				MCU_MISO,
+	input	 wire				MCU_SPI_FT_CS_N,
+	input	 wire				MCU_SPI_SD2_CS_N,	
+	inout	 wire	[1:0] 	MCU_SPI_IO,
 
 	//---------------------------
-	output				MIDI_TX,
-	output				MIDI_CLK,
-	output				MIDI_RESET_N,
+	output wire				MIDI_TX,
+	output wire				MIDI_CLK,
+	output wire				MIDI_RESET_N,
 
 	//---------------------------
-	output				FLASH_CS_N,
-	input					FLASH_DO,
-	output				FLASH_DI,
-	output				FLASH_SCK,
-	output				FLASH_WP_N,
-	output				FLASH_HOLD_N	
+	output wire				FLASH_CS_N,
+	input	 wire				FLASH_DO,
+	output wire				FLASH_DI,
+	output wire				FLASH_SCK,
+	output wire				FLASH_WP_N,
+	output wire				FLASH_HOLD_N	
 ) ;
 
 	// unused signals	
@@ -160,246 +168,62 @@ module karabas_go_top(
 	assign MIDI_RESET_N	= 1'b1;
 	assign MIDI_TX			= 1'b1;
 	assign MIDI_CLK		= 1'b0 ;
-	assign DAC_LRCK		= 1'b0 ;
-	assign DAC_MUTE		= 1'b1 ;
-	assign DAC_BCK			= 1'b0 ;
-	assign DAC_DAT			= 1'b0 ;
 	assign FT_SPI_CS_N	= 1'b1 ;
 	assign FT_SPI_MOSI	= 1'bZ ;
 	assign FT_SPI_SCK		= 1'bZ ;
 	
-	wire clk10, clkready, clk_p, clk_n, sdclock ;
+	// VT wrapper
 	
-	pll pll_top(
-		.inclk0(CLK_50MHZ),
-		.areset(1'b0),
-		.locked(clkready),
-		.c0(clk10), 	// 10MHz VT100
-		.c1(clk_p),		// 50MHz CPU
-		.c2(clk_n),		// 50Mhz CPU 180deg
-		.c3(sdclock)	//	12.5Mhz SD Card
-	) ;
+	wire areset, v_clk, clk, video_hsync, video_vsync, video_blank, beeper, dvi_only;
+	wire [23:0] video_rgb;
+	wire [15:0] audio_mix_l, audio_mix_r;
 	
-	wire areset = ~clkready ;
-
-	// mouse / cursor
-	wire [7:0] ms_x, ms_y, cursor_x, cursor_y ;
-	wire [3:0] ms_z, cursor_z ;
-	wire [2:0] ms_b, cursor_b ;
-	wire ms_upd ;
-	
-	// kbd
-	wire [7:0] hid_kb_status, hid_kb_dat0, hid_kb_dat1, hid_kb_dat2 ;
-	wire [7:0] hid_kb_dat3, hid_kb_dat4, hid_kb_dat5, ps2_scancode ;
-	wire ps2_scancode_upd ;
-	
-	// joy
-	wire [12:0] joy_l, joy_r ;
-	
-	// hw buttons
-	wire [1:0] hw_btn ;
-	
-	// soft switches
-	wire sw_reset ;
-	
-	// RTC
-	wire [7:0] rtc_addr, rtc_di, rtc_do ;
-	wire rtc_wr, rtc_rd ;
-	
-	// UART
-	wire [7:0] uart_rx_data, uart_rx_idx, uart_tx_data, uart_dlm, uart_dll ;
-	wire uart_dll_wr, uart_dlm_wr ;
-	wire uart_tx_mode = 1'b1 ;
-	reg  uart_tx_wr = 1'b0 ;
-	
-	// ROM Loader
-	wire loader_act, loader_wr ;
-	wire [31:0] loader_addr ;
-	wire [7:0] loader_data ;
-	
-	// OSD cmd
-	wire [15:0] softsw_command, osd_command ;
-	
-	wire mcu_ft_spi_on, mcu_ft_vga_on, mcu_ft_sck, mcu_ft_mosi, mcu_ft_cs_n ;
-	wire mcu_busy ;
-	
-	// DEBUG
-	reg [15:0] debug_addr  ;
-	reg [15:0] debug_data ;
-	
-	mcu mcu(
-		.CLK(clk_p),
-		.N_RESET(~areset),
-
-		.MCU_MOSI(MCU_MOSI),
-		.MCU_MISO(MCU_MISO),
-		.MCU_SCK(MCU_SCK),
-		.MCU_SS(MCU_CS_N),
-
-		.MCU_SPI_FT_SS(MCU_SPI_FT_CS_N),
-		.MCU_SPI_SD2_SS(MCU_SPI_SD2_CS_N),	
-
-		.MS_X(ms_x),
-		.MS_Y(ms_y),
-		.MS_Z(ms_z),
-		.MS_B(ms_b),
-		.MS_UPD(ms_upd),
-
-		.KB_STATUS(hid_kb_status),
-		.KB_DAT0(hid_kb_dat0),
-		.KB_DAT1(hid_kb_dat1),
-		.KB_DAT2(hid_kb_dat2),
-		.KB_DAT3(hid_kb_dat3),
-		.KB_DAT4(hid_kb_dat4),
-		.KB_DAT5(hid_kb_dat5),
-
-		.KB_SCANCODE(ps2_scancode),
-		.KB_SCANCODE_UPD(ps2_scancode_upd),
-
-		.JOY_L(joy_l),
-		.JOY_R(joy_r),
-
-		.BTNS(hw_btn),
-
-		.RTC_A(rtc_addr),
-		.RTC_DI(rtc_di),
-		.RTC_DO(rtc_do),
-		.RTC_CS(1'b1),
-		.RTC_WR_N(~rtc_wr),
-
-		.UART_RX_DATA(uart_rx_data),
-		.UART_RX_IDX(uart_rx_idx),	 
-		.UART_TX_DATA(uart_tx_data),
-		.UART_TX_WR(uart_tx_wr),
-		.UART_TX_MODE(uart_tx_mode),
-		.UART_DLL(uart_dll),
-		.UART_DLM(uart_dlm),
-		.UART_DLL_WR(uart_dll_wr),
-		.UART_DLM_WR(uart_dlm_wr),
-
-		.ROMLOADER_ACTIVE(loader_act),
-		.ROMLOAD_ADDR(loader_addr),
-		.ROMLOAD_DATA(loader_data),
-		.ROMLOAD_WR(loader_wr),
-
-		.SOFTSW_COMMAND(softsw_command),	
-		.OSD_COMMAND(osd_command),
-
-		.FT_SPI_ON(mcu_ft_spi_on),
-		.FT_VGA_ON(mcu_ft_vga_on),
-		.FT_SCK(mcu_ft_sck),
-		.FT_MISO(FT_SPI_MISO),
-		.FT_MOSI(mcu_ft_mosi),
-		.FT_CS_N(mcu_ft_cs_n),
-		
-		.DEBUG_ADDR(debug_addr),
-		.DEBUG_DATA(debug_data),
-
-		.BUSY(mcu_busy)
-	) ;
+	vt_top vt_top(
+		// global pins
+		.clk(CLK_50MHZ),
+		.mcu_mosi(MCU_MOSI),
+		.mcu_miso(MCU_MISO),
+		.mcu_sck(MCU_SCK),
+		.mcu_cs_n(MCU_CS_N),
+		// vt signals
+		.areset(areset),
+		.v_clk(v_clk),
+		.p_clk(clk),
+		.rgb(video_rgb),
+		.hs(video_hsync),
+		.vs(video_vsync),
+		.blank(video_blank),
+		.audio_l(audio_mix_l),
+		.audio_r(audio_mix_r),
+		.beeper(beeper),
+		.dvi_only(dvi_only)
+	);
 	
 	// VIDEO
 	
 	assign FT_OE_N = 1'b1 ; // disable FT
-	
-	wire vga_hsync, vga_vsync ;
-	wire [7:0] vgar, vgag, vgab ;
-	
-	assign VGA_HS = vga_hsync ;
-	assign VGA_VS = vga_vsync ;
+	assign VGA_HS = video_hsync;
+	assign VGA_VS = video_vsync;
+	assign VGA_R = video_rgb[23:16];
+	assign VGA_G = video_rgb[15:8];
+	assign VGA_B = video_rgb[7:0];
+	assign V_CLK = v_clk;
 
-	overlay overlay(
-		.CLK(clk_p),
-		.RGB_I({vgar, vgag, vgab}),
-		.RGB_O({VGA_R, VGA_G, VGA_B}),
-		.HSYNC_I(vga_hsync),
-		.VSYNC_I(vga_vsync),
-		.OSD_COMMAND(osd_command)
-	) ;
+	// HW BEEPER
 	
-	wire tx, rx ;
-	wire ps2k_c, ps2k_d ;
+	assign BEEPER = beeper;
 	
-//	assign rx = tx ;
-
-	vt100_top vt100(
-		.clkin(clk_p),
-		.c0(clk10),
-		.resetbtn(~sw_reset || ~hw_btn[1]),
-		.tx(tx),
-		.rx(rx),
-		.vgar(vgar),
-		.vgag(vgag),
-		.vgab(vgab),
-		.vgah(vga_hsync),
-		.vgav(vga_vsync),
-		.vgaclk(V_CLK),
-		.ps2k_c(ps2k_c),
-		.ps2k_d(ps2k_d),
-		.audio(BEEPER)
-	) ;
-
-	usb_ps2_convertor usb2ps2(
-		.clk(clk_p),
-		.kb_scancode(ps2_scancode),
-		.kb_scancode_upd(ps2_scancode_upd),
-		.PS2data(ps2k_d),
-		.PS2clock(ps2k_c)
-	) ;
+	// i2s DAC 
 	
-	// MCU --> VT100
-	
-	reg [7:0] tx_data = 8'd0 ;
-	reg tx_dv = 1'b0 ;
-	wire tx_act, tx_done ;
-	
-	UART_TX utx(
-		.i_Clk(clk_p),
-		.i_TX_DV(tx_dv),
-		.i_TX_Byte(tx_data),
-		.o_TX_Active(tx_act),
-		.o_TX_Serial(rx),
-		.o_TX_Done(tx_done)
-	) ;
-	
-	reg [7:0] old_idx = 8'd0 ;
-	
-	always @(posedge clk_p) begin
-		if ((uart_rx_idx != old_idx) && ~tx_act) begin
-			old_idx <= uart_rx_idx ;
-			tx_data <= uart_rx_data ;
-			tx_dv <= 1'b1 ;
-		end else begin
-			tx_dv <= 1'b0 ;
-		end
-	end
-	
-	// VT100 --> MCU
-	
-	wire rx_dv ;
-	
-	UART_RX urx(
-		.i_Clk(clk_p),
-		.i_RX_Serial(tx),
-		.o_RX_DV(rx_dv),
-		.o_RX_Byte(uart_tx_data)
-	) ;
-	
-	always @(posedge clk_p) begin
-		if (rx_dv == 1'b1) begin
-			uart_tx_wr <= 1'b1 ;
-//			debug_data <= {8'b0, uart_tx_data} ;
-		end else begin
-			uart_tx_wr <= 1'b0 ;
-		end
-	end
-	
-	// SOFT SWITCHES
-	
-	soft_switches sosw(
-		.clk(clk_p),
-		.sw_command(softsw_command),
-		.sw_reset(sw_reset)
-	) ;
+	PCM5102 #(.DAC_CLK_DIV_BITS(3)) PCM5102(
+		.clk				(clk),
+		.reset			(areset),
+		.left				(audio_mix_l),
+		.right			(audio_mix_r),
+		.din				(DAC_DAT),
+		.bck				(DAC_BCK),
+		.lrck				(DAC_LRCK)
+	);
+	assign DAC_MUTE = 1'b1;
 	
 endmodule

@@ -1,12 +1,12 @@
 {
     "id": "vt100",
     "name": "VT100",
-    "build": "26051622",
+    "build": "26052200",
     "bitstream": "karabas_mini_top.bin",
     "visible": true,
     "type": "osd",
-    "order": 2,
-    "eeprom_bank": 0,
+    "order": 10,
+    "eeprom_bank": 255,
     "roms": [],
     "osd": [
         {"type": "T", "bits": 1, "name": "Reset", "options": null, "default": 0, "hotkey": "Ctrl+Alt+Del"},
