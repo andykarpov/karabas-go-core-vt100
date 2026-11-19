@@ -1,7 +1,7 @@
 {
     "id": "vt100",
     "name": "VT100",
-    "build": "26111920",
+    "build": "26111921",
     "visible": true,
     "type": "osd",
     "order": 10,
@@ -10,7 +10,7 @@
     "boards": {
         "minig": {
             "link": 2,
-            "build": "26111920",
+            "build": "26111921",
             "bitstream": "karabas_minig.bin"
         }
     },

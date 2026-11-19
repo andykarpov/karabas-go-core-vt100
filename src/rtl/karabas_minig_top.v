@@ -15,7 +15,7 @@
  /dev/serial/by-id/usb-Karabas_Go_*-if02, "Karabas core serial", or a USB-UART adapter on the USB
  host) <-> vt_uart (8N1, 115200) <-> kl11 of the terminal. The terminal holds the line with rts
  (its receive silo of 16 bytes); the bytes wait in the out fifo of the port and the USB fifo.
- XON / XOFF of the terminal go to the PC as they are (the tty of the PC takes them).
+ XON / XOFF of the terminal hold the line in the core and are not sent to the PC.
 
  Keyboard: the PS/2 set 2 bytes of kg_mcu2 (USB or PS/2 keyboards of the MCU).
  Picture: two levels (vgao bold, vgai normal) in the colour of the OSD item (amber / green /
@@ -294,22 +294,42 @@ end
 // ------------------------------------------------------------------ the serial line
 
 wire term_tx, term_rx, term_rts;
+reg term_xoff = 1'b0;      // XOFF of the terminal (below)
 vt_uart_tx ser_tx (
 	.clk(clk_50),
 	.reset(areset),
-	.hold(term_rts),
+	.hold(term_rts || term_xoff),
 	.load(port_out_wr[0]),
 	.data(port_out_data[7:0]),
 	.ready(ser_out_ready),
 	.tx(term_rx)
 );
+wire ser_rx_done;
 vt_uart_rx ser_rx (
 	.clk(clk_50),
 	.reset(areset),
 	.rx(term_tx),
-	.done(ser_in_wr),
+	.done(ser_rx_done),
 	.data(ser_in_data)
 );
+
+// XON / XOFF of the terminal, done in the line (as rc2014_xonxoff): the vt10x firmware sends XOFF
+// (13h) when it cannot take more (while it scrolls) and drops what still comes; the PC reacts to an
+// XOFF only after the bytes already in the USB and port fifos. So XOFF holds the line here at once,
+// XON (11h) lets it go, and both are taken out of the stream to the PC (the bytes wait in the
+// fifos, nothing is lost). ^S / ^Q on the keyboard pause / resume the output the same way.
+reg [7:0] n_xoff = 8'd0;
+always @(posedge clk_50) begin
+	if (areset || term_reset)
+		term_xoff <= 1'b0;
+	else if (ser_rx_done && ser_in_data == 8'h13) begin
+		term_xoff <= 1'b1;
+		n_xoff <= n_xoff + 8'd1;
+	end
+	else if (ser_rx_done && ser_in_data == 8'h11)
+		term_xoff <= 1'b0;
+end
+assign ser_in_wr = ser_rx_done && ser_in_data != 8'h13 && ser_in_data != 8'h11;
 
 // bytes of the line, for the debug values
 reg [7:0] n_out = 8'd0, n_in = 8'd0, n_drop = 8'd0;
@@ -451,9 +471,9 @@ hdmi_tx #(.SAMPLE_FREQ(48000)) hdmi (
 
 // ------------------------------------------------------------------ debug
 
-// DEBUG_ADDR: { bytes PC -> terminal, bytes terminal -> PC }; DEBUG_DATA: { rts, out ready, in full, 5'b0, bytes dropped }
+// DEBUG_ADDR: { bytes PC -> terminal, bytes terminal -> PC }; DEBUG_DATA: { rts, xoff, out ready, in full, XOFF count (4 bits), bytes dropped }
 assign dbg_addr = { n_out, n_in };
 always @(posedge clk_50)
-	dbg_data <= { term_rts, ser_out_ready, port_in_full[0], 5'd0, n_drop };
+	dbg_data <= { term_rts, term_xoff, ser_out_ready, port_in_full[0], n_xoff[3:0], n_drop };
 
 endmodule

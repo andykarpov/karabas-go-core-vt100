@@ -26,7 +26,8 @@ The rules of the other karabas-go cores apply: standard video timing with syncs 
 
 - `cd src && make minig` (xst, impl, `.kg`), `make minig-report`. `make_core.py` is a symlink to `../../karabas-go-tools/make_core/make_core.py`. `core.json` (kgo2, `"link": 2`) packs `vt100.kg`; `karabas_<board>.bin` and `vt100.kg` are committed.
 - OSD (`core.json`): 0 Colour (Amber / Green / White), 1 Reset (Menu+F12; also board button 1).
-- DEBUG (`AT+KARABAS=debug:1`): addr { bytes PC -> terminal, bytes terminal -> PC }, data { rts, out ready, in full, 0, bytes dropped }.
+- XON / XOFF of the terminal are done in the line (`karabas_minig_top.v`, as `rc2014_xonxoff`): the vt10x firmware drops characters while it scrolls and sends XOFF; the PC reacts too late (2000-line flood at 115200 lost chunks on 26111920), so XOFF holds `vt_uart_tx` at once, XON releases it, both are not sent to the PC. ^S / ^Q of the keyboard pause the output.
+- DEBUG (`AT+KARABAS=debug:1`): addr { bytes PC -> terminal, bytes terminal -> PC }, data { rts, xoff, out ready, in full, XOFF count (4 bits), bytes dropped }.
 
 ## Memory
 
