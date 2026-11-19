@@ -19,12 +19,13 @@ The rules of the other karabas-go cores apply: standard video timing with syncs 
 
 - `modules`: the karabas-go-modules submodule (`kg_mcu2` link v2, `kg_l2_osd_overlay`, `hdmi_tx`, `kg_pll`, `kg_pcm5102`).
 - `src/rtl/karabas_minig_top.v`: the board glue around `vt100_top` (see its header): `vt_clocks` (50 / 25 / 125 / 10 / 8 MHz), `kg_mcu2` (port 0, OSD, AUX debug), `vt_uart` (8N1 115200 between port 0 and kl11; out_ready drops with out_wr and while the terminal holds rts), the picture in two levels in the colour of the OSD item, the bitmap OSD, HDMI and the PCM5102 (the bell).
+- `src/rtl/karabas_mini_top.v`, `karabas_go_top.v` and the timing part of `karabas_mini.ucf` / `karabas_go.ucf` are made by `src/tools/mktops.py` from the Mini G top / ucf (as core-rc2014): change the Mini G top, then run it. Mini: MCU_SCK not on a clock pin, sigma-delta audio; Go: VGA 8:8:8 with V_CLK, the FT812 off the video bus, floppy outputs 0, no HDMI.
 - `src/rtl/vt100`: the PDP2011 sources the terminal needs. The karabas fixes (from core-rc2014): `kl11.vhd` sample divider `<` instead of `<=` (it ran at 111607 bps, back-to-back frames lost sync), `vt.vhd` rts of kl11 wired out, `vt100_top.vhd` rtscts 1 (the receive silo of 16 bytes) and the PS/2 byte interface (`ps2k_upd` / `ps2k_dat`, `ps2.vhd` + `rtl/fifo/afifo.v`), `vgai` (vga_ht, normal text) next to `vgao` (bold).
 - `src/sim/tb_vt_uart.v` (`make sim`, iverilog): vt_uart fed as kg_l2_port feeds it, back to back with rts going on and off.
 
 ## Build
 
-- `cd src && make minig` (xst, impl, `.kg`), `make minig-report`. `make_core.py` is a symlink to `../../karabas-go-tools/make_core/make_core.py`. `core.json` (kgo2, `"link": 2`) packs `vt100.kg`; `karabas_<board>.bin` and `vt100.kg` are committed.
+- `cd src && make minig` (or `go`, `mini`: xst, impl, `.kg`), `make <board>-report`. Release: all three boards, then `python3 make_core.py core.json vt100.kg` packs them all (a `make <board>` packs only its board). `make_core.py` is a symlink to `../../karabas-go-tools/make_core/make_core.py`. `core.json` (kgo2, `"link": 2`) packs `vt100.kg`; `karabas_<board>.bin` and `vt100.kg` are committed.
 - OSD (`core.json`): 0 Colour (Amber / Green / White), 1 Reset (Menu+F12; also board button 1).
 - XON / XOFF of the terminal are done in the line (`karabas_minig_top.v`, as `rc2014_xonxoff`): the vt10x firmware drops characters while it scrolls and sends XOFF; the PC reacts too late (2000-line flood at 115200 lost chunks on 26111920), so XOFF holds `vt_uart_tx` at once, XON releases it, both are not sent to the PC. ^S / ^Q of the keyboard pause the output.
 - DEBUG (`AT+KARABAS=debug:1`): addr { bytes PC -> terminal, bytes terminal -> PC }, data { rts, xoff, out ready, in full, XOFF count (4 bits), bytes dropped }.
