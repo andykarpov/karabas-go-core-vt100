@@ -21,8 +21,8 @@
  XON / XOFF of the terminal hold the line in the core and are not sent to the PC.
 
  Keyboard: the PS/2 set 2 bytes of kg_mcu2 (USB or PS/2 keyboards of the MCU).
- Picture: two levels (vgao bold, vgai normal) in the colour of the OSD item (amber / green /
- white), the normal level at half of it. Audio: the bell to the PCM5102 and HDMI (48 kHz).
+ Picture: vgao (all text, bold drawn thicker) in the colour of the OSD item (amber / green /
+ white); vgai (vga_ht, the shading of the VT105 graphs, never set with vttype 100) at half of it. Audio: the bell to the PCM5102 and HDMI (48 kHz).
 
  Soft switches (the index of the item in the osd of core.json): 0 Colour (Amber / Green / White),
  1 Reset (the terminal; also board button 1, as before).
