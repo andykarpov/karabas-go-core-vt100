@@ -23,7 +23,7 @@ one, bold text, the colours). The Go and Mini builds have not been run on a boar
   terminal are handled in the core: nothing is lost while the screen scrolls, and Ctrl+S / Ctrl+Q
   pause and resume the output.
 - USB or PS/2 keyboard of the board.
-- Colour in the OSD: amber, green or white; normal text at half brightness, bold at full.
+- Colour in the OSD: amber, green or white (bold text is drawn thicker, in the same colour).
 
 ## Getting started
 
