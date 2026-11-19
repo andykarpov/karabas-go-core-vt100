@@ -1,4 +1,4 @@
-k# intermediate build files
+# intermediate build files
 *.bgn
 *.bit
 *.bld
@@ -65,7 +65,25 @@ xlnx_auto_0_xdb/
 xst/
 _ngo/
 _xmsgs/
-ipcore_dir/tmp/
 
-# special scripts
-make_core.py
+
+# build inputs of the boards (src/Makefile)
+!src/karabas_*.prj
+!src/karabas_*.xst
+# build inputs of the boards (src/Makefile)
+!src/karabas_*.prj
+!src/karabas_*.xst
+!src/karabas_*.ut
+
+# simulation builds, make stamps, logs
+src/sim/build/
+src/kg_*.stamp
+src/build_*.log
+src/measure/*.log
+!src/measure/*.prj
+!src/measure/*.xst
+src/xst_*/
+src/xst_*/
+src/measure/*.log
+!src/measure/*.prj
+!src/measure/*.xst

@@ -1,0 +1,39 @@
+{
+    "id": "vt100",
+    "name": "VT100",
+    "build": "26111920",
+    "visible": true,
+    "type": "osd",
+    "order": 10,
+    "eeprom_bank": 255,
+    "roms": [],
+    "boards": {
+        "minig": {
+            "link": 2,
+            "build": "26111920",
+            "bitstream": "karabas_minig.bin"
+        }
+    },
+    "osd": [
+        {
+            "type": "S",
+            "name": "Colour",
+            "options": [
+                "Amber",
+                "Green",
+                "White"
+            ],
+            "default": 0,
+            "index": 0
+        },
+        {
+            "type": "-"
+        },
+        {
+            "type": "T",
+            "name": "Reset",
+            "hotkey": "Menu+F12",
+            "index": 1
+        }
+    ]
+}
