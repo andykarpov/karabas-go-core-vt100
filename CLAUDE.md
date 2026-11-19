@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A VT100 terminal core for the Karabas Go, Mini and Mini G boards: Xilinx Spartan-6 XC6SLX25, ISE 14.7 (XST). The terminal is the VT100 of Sytse van Slooten's PDP2011 (`rtl/vt100/`, `vt100_top.vhd`; his license allows personal, non-commercial use only and the copyright notice must stay unchanged). The repo itself is MIT (`LICENSE`, Andy Karpov 2024).
 
-The serial line of the terminal is the USB CDC port of the board: the MCU forwards the bytes of the PC with `CMD_UART` (FC) and `rtl/mcu/mcu_uart_bridge.v` (a fifo) feeds them to the VT100 and sends its output back. On a Linux host a `serial-getty@ttyACM0` gives a login prompt (`README.md`).
+The serial line of the terminal is the core serial port of the board (CDC 1, `/dev/serial/by-id/usb-Karabas_Go_*-if02`; CDC 0 `-if00` has only the log and `AT+KARABAS=` since fw 2026-11-19): the MCU forwards the bytes of the PC with `CMD_UART` (FC) and `rtl/mcu/mcu_uart_bridge.v` (a fifo) feeds them to the VT100 and sends its output back. On a Linux host a getty on that port (`agetty ... -if02 vt100`) gives a login prompt (`README.md`).
 
 The repo has no git remote (local only). The core is not converted to karabas-go-modules: it has no `modules/` submodule and carries its own `rtl/mcu/mcu.vhd`, OSD and HDMI.
 
