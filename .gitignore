@@ -87,4 +87,4 @@ src/xst_*/
 src/measure/*.log
 !src/measure/*.prj
 !src/measure/*.xst
-sim/*.vvp
+src/sim/*.vvp
